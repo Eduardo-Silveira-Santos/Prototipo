@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.tabs.TabLayout;
@@ -58,27 +57,28 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_item, menu); // Certifique-se que o caminho está correto
+        getMenuInflater().inflate(R.menu.menu_item, menu);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.settings:
-                Toast.makeText(this, "Configurações Selecionadas", Toast.LENGTH_SHORT).show();
-                return true;
-            case R.id.share:
-                Toast.makeText(this, "Compartilhamento Selecionado", Toast.LENGTH_SHORT).show();
-                return true;
-            case R.id.aboutus:
-                Toast.makeText(this, "Informações Selecionadas", Toast.LENGTH_SHORT).show();
-                return true;
-            case R.id.logout:
-                Toast.makeText(this, "Sair do Aplicativo", Toast.LENGTH_SHORT).show();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.settings) {
+            Toast.makeText(this, "Configurações Selecionadas", Toast.LENGTH_SHORT).show();
+            return true;
+        } else if (id == R.id.share) {
+            Toast.makeText(this, "Compartilhamento Selecionado", Toast.LENGTH_SHORT).show();
+            return true;
+        } else if (id == R.id.aboutus) {
+            Toast.makeText(this, "Informações Selecionadas", Toast.LENGTH_SHORT).show();
+            return true;
+        } else if (id == R.id.logout) {
+            Toast.makeText(this, "Sair do Aplicativo", Toast.LENGTH_SHORT).show();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
     }
 }
