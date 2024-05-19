@@ -13,6 +13,9 @@
         android:theme="@style/Theme.Prototipo"
         tools:targetApi="31">
         <activity
+            android:name=".WorkerProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".WorkerListActivity"
             android:exported="false" />
         <activity
