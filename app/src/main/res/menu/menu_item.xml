@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_root"
+        android:icon="@drawable/ic_menu_menu"
+        android:title=""
+        app:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/settings"
+                android:icon="@drawable/ic_menu_settings"
+                android:title="Configurações"
+                app:showAsAction="never" />
+            <item
+                android:id="@+id/share"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Compartilhar"
+                app:showAsAction="never" />
+            <item
+                android:id="@+id/aboutus"
+                android:icon="@drawable/ic_menu_info"
+                android:title="Informações"
+                app:showAsAction="never" />
+            <item
+                android:id="@+id/logout"
+                android:icon="@drawable/ic_menu_exit"
+                android:title="Sair"
+                app:showAsAction="never" />
+        </menu>
+    </item>
+</menu>
