@@ -83,6 +83,8 @@
                 android:layout_height="wrap_content"
                 android:text="Nome do Trabalhador"
                 android:textColor="@android:color/black"
+                android:textAlignment="center"
+                android:drawableStart="@drawable/ic_worker_name"
                 android:textSize="24sp" />
 
             <TextView
@@ -92,6 +94,8 @@
                 android:layout_marginTop="16dp"
                 android:text="Profissão"
                 android:textColor="@android:color/black"
+                android:textAlignment="center"
+                android:drawableStart="@drawable/ic_worker_work"
                 android:textSize="24sp" />
 
             <TextView
@@ -101,6 +105,8 @@
                 android:layout_marginTop="16dp"
                 android:text="Avaliação"
                 android:textColor="@android:color/black"
+                android:textAlignment="center"
+                android:drawableStart="@drawable/ic_worker_star"
                 android:textSize="24sp" />
 
             <TextView
@@ -110,12 +116,16 @@
                 android:layout_marginTop="16dp"
                 android:text="Contato"
                 android:textColor="@android:color/black"
+                android:textAlignment="center"
+                android:drawableStart="@drawable/ic_worker_phone"
                 android:textSize="24sp" />
 
             <TextView
                 android:id="@+id/listAvaliation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="18sp"
                 android:layout_marginTop="100dp"/>
         </LinearLayout>
     </RelativeLayout>
