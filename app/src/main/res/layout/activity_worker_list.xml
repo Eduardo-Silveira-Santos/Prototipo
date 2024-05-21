@@ -11,7 +11,7 @@
         android:id="@+id/toolbar2"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
+        android:background="@color/colorPrimary"
         android:layout_alignParentTop="true"
         tools:ignore="MissingConstraints">
 
@@ -28,7 +28,8 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginStart="8dp"
                 android:background="@null"
-                android:src="@drawable/ic_menu_back" />
+                android:src="@drawable/ic_menu_back"
+                app:tint="@color/white" />
 
             <TextView
                 android:layout_width="0dp"
@@ -47,7 +48,8 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:background="@null"
-                android:src="@drawable/ic_menu_menu" />
+                android:src="@drawable/ic_menu_menu"
+                app:tint="@color/white" />
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
 

@@ -1,10 +1,13 @@
 package com.eduardosantos.prototipo;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.tabs.TabLayout;
 
@@ -25,6 +28,9 @@ public class MainActivity extends AppCompatActivity {
         viewPager2 = findViewById(R.id.viewPager);
         vpAdapter = new ViewPagerAdapter(this);
         viewPager2.setAdapter(vpAdapter);
+
+        Toolbar myToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(myToolbar);
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -47,17 +53,24 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        String userEmail = getIntent().getStringExtra("user_email");
-        if (userEmail != null && databaseHelper.isAdmin(userEmail)) {
-            Toast.makeText(this, "Bem-vindo, Administrador!", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Bem-vindo, Usuário!", Toast.LENGTH_SHORT).show();
-        }
+        SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        String userName = sharedPreferences.getString("user_name", null);
+        String userEmail = sharedPreferences.getString("user_email", null);
+
+        Toast.makeText(this, "Bem-vindo!", Toast.LENGTH_SHORT).show();
+
+        FragmentAccount fragmentAccount = new FragmentAccount();
+        Bundle bundle = new Bundle();
+        bundle.putString("user_name", userName);
+        bundle.putString("user_email", userEmail);
+        fragmentAccount.setArguments(bundle);
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_item, menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_item, menu);
         return true;
     }
 

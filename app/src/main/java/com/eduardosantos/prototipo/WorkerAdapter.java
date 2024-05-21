@@ -6,39 +6,49 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.google.android.material.imageview.ShapeableImageView;
+
 import java.util.List;
 
 public class WorkerAdapter extends ArrayAdapter<Worker> {
 
-    private Context context;
-    private List<Worker> workers;
+    private Context mContext;
+    private int mResource;
 
-    public WorkerAdapter(Context context, List<Worker> workers) {
-        super(context, 0, workers);
-        this.context = context;
-        this.workers = workers;
+    public WorkerAdapter(@NonNull Context context, int resource, @NonNull List<Worker> objects) {
+        super(context, resource, objects);
+        mContext = context;
+        mResource = resource;
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        View listItem = convertView;
-        if (listItem == null) {
-            listItem = LayoutInflater.from(context).inflate(R.layout.list_item, parent, false);
+    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        // Inflate the layout for this list item if necessary
+        if (convertView == null) {
+            LayoutInflater inflater = LayoutInflater.from(mContext);
+            convertView = inflater.inflate(mResource, parent, false);
         }
 
-        Worker currentWorker = workers.get(position);
+        // Get the worker object located at this position in the list
+        Worker worker = getItem(position);
 
-        TextView nameTextView = listItem.findViewById(R.id.listName);
-        TextView professionTextView = listItem.findViewById(R.id.listProfession);
-        TextView ratingTextView = listItem.findViewById(R.id.listRating);
+        // Get references to the views in the layout
+        ShapeableImageView imageView = convertView.findViewById( R.id.listImage);
+        TextView nameTextView = convertView.findViewById(R.id.listName);
+        TextView professionTextView = convertView.findViewById(R.id.listProfession);
+        TextView ratingTextView = convertView.findViewById(R.id.listRating);
 
-        if (currentWorker != null) {
-            nameTextView.setText(currentWorker.getName());
-            professionTextView.setText(currentWorker.getProfession());
-            ratingTextView.setText(String.valueOf(currentWorker.getRating()));
-        }
+        // Set the data for each view
+        imageView.setImageResource(R.drawable.ic_list_worker); // Set worker image here if available
+        nameTextView.setText(worker.getName());
+        professionTextView.setText(worker.getProfession());
+        ratingTextView.setText(String.valueOf(worker.getRating())); // Assuming rating is a double
 
-        return listItem;
+        return convertView;
     }
 }
-

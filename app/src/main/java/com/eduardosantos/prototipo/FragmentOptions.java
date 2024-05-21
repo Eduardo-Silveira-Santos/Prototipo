@@ -6,76 +6,64 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.cardview.widget.CardView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 public class FragmentOptions extends Fragment {
-
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_options, container, false);
 
-        CardView joatCard = view.findViewById(R.id.joatCard);
-        CardView electricianCard = view.findViewById(R.id.electricianCard);
-        CardView painterCard = view.findViewById(R.id.painterCard);
-        CardView mechanicCard = view.findViewById(R.id.mechanicCard);
-        CardView plumberCard = view.findViewById(R.id.plumberCard);
-        CardView pestControlCard = view.findViewById(R.id.pestControlCard);
-
-        joatCard.setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.joatCard).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), WorkerListActivity.class);
-                intent.putExtra("profession", "Faz Tudo");
-                startActivity(intent);
+                startWorkerListActivity("Faz Tudo");
             }
         });
 
-        electricianCard.setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.electricianCard).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), WorkerListActivity.class);
-                intent.putExtra("profession", "Eletricista");
-                startActivity(intent);
+                startWorkerListActivity("Eletricista");
             }
         });
 
-        painterCard.setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.painterCard).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), WorkerListActivity.class);
-                intent.putExtra("profession", "Pintor");
-                startActivity(intent);
+                startWorkerListActivity("Pintor");
             }
         });
 
-        mechanicCard.setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.plumberCard).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), WorkerListActivity.class);
-                intent.putExtra("profession", "Mecânico");
-                startActivity(intent);
+                startWorkerListActivity("Encanador");
             }
         });
 
-        plumberCard.setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.mechanicCard).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), WorkerListActivity.class);
-                intent.putExtra("profession", "Encanador");
-                startActivity(intent);
+                startWorkerListActivity("Mecânico");
             }
         });
 
-        pestControlCard.setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.pestControlCard).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), WorkerListActivity.class);
-                intent.putExtra("profession", "Dedetizador");
-                startActivity(intent);
+                startWorkerListActivity("Dedetizador");
             }
         });
 
         return view;
+    }
+
+    private void startWorkerListActivity(String profession) {
+        Intent intent = new Intent(getActivity(), WorkerListActivity.class);
+        intent.putExtra("profession", profession);
+        startActivity(intent);
     }
 }

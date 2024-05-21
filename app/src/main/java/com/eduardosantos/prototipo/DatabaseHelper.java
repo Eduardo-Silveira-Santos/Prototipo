@@ -46,18 +46,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public boolean insertAdmin(String name, String email, String password) {
-        SQLiteDatabase MyDatabase = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("name", name);
-        contentValues.put("email", email);
-        contentValues.put("password", password);
-        contentValues.put("is_admin", 1);
-        long result = MyDatabase.insert("allusers", null, contentValues);
-        return result != -1;
-    }
-
-
     public boolean checkEmail(String email) {
         String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + COL_EMAIL + " = ?";
         try (SQLiteDatabase db = this.getReadableDatabase();
@@ -74,15 +62,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public boolean isAdmin(String email) {
-        String query = "SELECT is_admin FROM " + TABLE_NAME + " WHERE " + COL_EMAIL + " = ?";
-        try (SQLiteDatabase db = this.getReadableDatabase();
-             Cursor cursor = db.rawQuery(query, new String[]{email})) {
-            if (cursor.moveToFirst()) {
-                int isAdmin = cursor.getInt(0);
-                return isAdmin == 1;
+    public String getUserName(String userEmail) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String userName = null;
+        String selectQuery = "SELECT " + COL_NAME + " FROM " + TABLE_NAME + " WHERE " + COL_EMAIL + " = ?";
+        Cursor cursor = db.rawQuery(selectQuery, new String[]{userEmail});
+        if (cursor != null && cursor.moveToFirst()) {
+            int nameIndex = cursor.getColumnIndex(COL_NAME);
+            if (nameIndex != -1) {
+                userName = cursor.getString(nameIndex);
             }
-            return false;
         }
+        if (cursor != null) {
+            cursor.close();
+        }
+        db.close();
+        return userName;
     }
 }
