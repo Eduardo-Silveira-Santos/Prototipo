@@ -85,6 +85,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -136,7 +138,6 @@
                     android:layout_marginStart="24dp"
                     android:layout_marginTop="24dp"
                     android:layout_marginEnd="24dp"
-                    android:layout_marginBottom="24dp"
                     android:drawableStart="@drawable/ic_worker_phone"
                     android:drawablePadding="8dp"
                     android:text="Contato"
@@ -144,9 +145,22 @@
                     android:textColor="@android:color/black"
                     android:textSize="24sp" />
 
+                <TextView
+                    android:id="@+id/listCity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginBottom="24dp"
+                    android:drawableStart="@drawable/ic_worker_location"
+                    android:drawablePadding="8dp"
+                    android:text="Cidade"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/black"
+                    android:textSize="24sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
-
 
         <TextView
             android:id="@+id/listAvaliation"

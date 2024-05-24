@@ -1,9 +1,11 @@
 package com.eduardosantos.prototipo;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 public class WorkerProfileActivity extends AppCompatActivity {
@@ -16,24 +18,7 @@ public class WorkerProfileActivity extends AppCompatActivity {
         Worker worker = getIntent().getParcelableExtra("worker");
 
         if (worker != null) {
-            TextView nameTextView = findViewById( R.id.listName3 );
-            TextView professionTextView = findViewById( R.id.listProfession3 );
-            TextView ratingTextView = findViewById( R.id.listRating3 );
-            TextView contactTextView = findViewById( R.id.listContact );  // Assuming contact details are part of the worker object
-            TextView avaliationTextView = findViewById( R.id.listAvaliation );
-
-            nameTextView.setText( worker.getName() );
-            professionTextView.setText( worker.getProfession() );
-            ratingTextView.setText( String.valueOf( worker.getRating() ) );
-            contactTextView.setText( "(99) 99999-9999" );
-
-            /*// Adding 3 sample reviews
-            String reviews = "Avaliações:\n\n" +
-                    "   1. Excelente profissional, muito competente e dedicado.\n\n" +
-                    "   2. Trabalho bem feito, recomendo!\n\n" +
-                    "   3. Serviço razoável, poderia ser mais rápido.";
-
-            avaliationTextView.setText(reviews);*/
+            populateViews(worker);
         }
 
         ImageButton backButton = findViewById(R.id.btn_left3);
@@ -44,4 +29,24 @@ public class WorkerProfileActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void populateViews(Worker worker) {
+        TextView nameTextView = findViewById(R.id.listName3);
+        TextView professionTextView = findViewById(R.id.listProfession3);
+        TextView ratingTextView = findViewById(R.id.listRating3);
+        TextView contactTextView = findViewById(R.id.listContact);
+        TextView cityTextView = findViewById(R.id.listCity);
+
+        nameTextView.setText(worker.getName());
+        professionTextView.setText(worker.getProfession());
+        ratingTextView.setText(String.valueOf(worker.getRating()));
+
+        // Debugging: Verificando se o número de telefone e a cidade estão corretos
+        Log.d("WorkerProfileActivity", "Telefone: " + worker.getPhoneNumber());
+        Log.d("WorkerProfileActivity", "Cidade: " + worker.getCity());
+
+        contactTextView.setText(worker.getPhoneNumber()); // Definindo o número de telefone
+        cityTextView.setText(worker.getCity()); // Definindo a cidade
+    }
+
 }

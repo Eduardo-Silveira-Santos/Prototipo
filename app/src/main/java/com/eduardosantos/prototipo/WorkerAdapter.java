@@ -25,29 +25,39 @@ public class WorkerAdapter extends ArrayAdapter<Worker> {
         mResource = resource;
     }
 
+    static class ViewHolder {
+        ShapeableImageView imageView;
+        TextView nameTextView;
+        TextView professionTextView;
+        TextView ratingTextView;
+    }
+
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        // Inflate the layout for this list item if necessary
+        ViewHolder viewHolder;
+
         if (convertView == null) {
             LayoutInflater inflater = LayoutInflater.from(mContext);
             convertView = inflater.inflate(mResource, parent, false);
+            viewHolder = new ViewHolder();
+            viewHolder.imageView = convertView.findViewById(R.id.listImage);
+            viewHolder.nameTextView = convertView.findViewById(R.id.listName);
+            viewHolder.professionTextView = convertView.findViewById(R.id.listProfession);
+            viewHolder.ratingTextView = convertView.findViewById(R.id.listRating);
+            convertView.setTag(viewHolder);
+        } else {
+            viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        // Get the worker object located at this position in the list
         Worker worker = getItem(position);
 
-        // Get references to the views in the layout
-        ShapeableImageView imageView = convertView.findViewById( R.id.listImage);
-        TextView nameTextView = convertView.findViewById(R.id.listName);
-        TextView professionTextView = convertView.findViewById(R.id.listProfession);
-        TextView ratingTextView = convertView.findViewById(R.id.listRating);
-
-        // Set the data for each view
-        imageView.setImageResource(R.drawable.ic_list_worker); // Set worker image here if available
-        nameTextView.setText(worker.getName());
-        professionTextView.setText(worker.getProfession());
-        ratingTextView.setText(String.valueOf(worker.getRating())); // Assuming rating is a double
+        if (worker != null) {
+            viewHolder.imageView.setImageResource(R.drawable.ic_list_worker);
+            viewHolder.nameTextView.setText(worker.getName());
+            viewHolder.professionTextView.setText(worker.getProfession());
+            viewHolder.ratingTextView.setText(String.valueOf(worker.getRating()));
+        }
 
         return convertView;
     }

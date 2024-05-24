@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">Prototipo</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="welcome_message">Bem-vindo, %s!</string>
+    <string name="settings_selected">Configurações Selecionadas</string>
+    <string name="share_selected">Compartilhamento Selecionado</string>
+    <string name="about_selected">Informações Selecionadas</string>
+    <string name="logout_message">Sair do Aplicativo</string>
 </resources>

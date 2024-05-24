@@ -1,22 +1,26 @@
 package com.eduardosantos.prototipo;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager2.widget.ViewPager2;
+
 import com.google.android.material.tabs.TabLayout;
 
 public class MainActivity extends AppCompatActivity {
-    TabLayout tabLayout;
-    ViewPager2 viewPager2;
-    ViewPagerAdapter vpAdapter;
-    DatabaseHelper databaseHelper;
-
+    private TabLayout tabLayout;
+    private ViewPager2 viewPager2;
+    private ViewPagerAdapter vpAdapter;
+    private DatabaseHelper databaseHelper;
+    private String userName;
+    private String userEmail;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,6 +28,11 @@ public class MainActivity extends AppCompatActivity {
 
         databaseHelper = new DatabaseHelper(this);
 
+        setupViews();
+        loadUserInfo();
+    }
+
+    private void setupViews() {
         tabLayout = findViewById(R.id.tabLayout);
         viewPager2 = findViewById(R.id.viewPager);
         vpAdapter = new ViewPagerAdapter(this);
@@ -52,20 +61,21 @@ public class MainActivity extends AppCompatActivity {
                 tabLayout.getTabAt(position).select();
             }
         });
-
-        SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-        String userName = sharedPreferences.getString("user_name", null);
-        String userEmail = sharedPreferences.getString("user_email", null);
-
-        Toast.makeText(this, "Bem-vindo!", Toast.LENGTH_SHORT).show();
-
-        FragmentAccount fragmentAccount = new FragmentAccount();
-        Bundle bundle = new Bundle();
-        bundle.putString("user_name", userName);
-        bundle.putString("user_email", userEmail);
-        fragmentAccount.setArguments(bundle);
-
     }
+
+    private void loadUserInfo() {
+        SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        userName = sharedPreferences.getString("user_name", null);
+        userEmail = sharedPreferences.getString("user_email", null);
+
+        if (userName != null) {
+            Toast.makeText(this, getString(R.string.welcome_message, userName), Toast.LENGTH_SHORT).show();
+            // Agora que userName e userEmail estão inicializados, podemos passá-los para o construtor de ViewPagerAdapter
+            vpAdapter = new ViewPagerAdapter(this );
+            viewPager2.setAdapter(vpAdapter);
+        }
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -79,19 +89,30 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.settings) {
-            Toast.makeText(this, "Configurações Selecionadas", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.settings_selected, Toast.LENGTH_SHORT).show();
             return true;
         } else if (id == R.id.share) {
-            Toast.makeText(this, "Compartilhamento Selecionado", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.share_selected, Toast.LENGTH_SHORT).show();
             return true;
         } else if (id == R.id.aboutus) {
-            Toast.makeText(this, "Informações Selecionadas", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.about_selected, Toast.LENGTH_SHORT).show();
             return true;
         } else if (id == R.id.logout) {
-            Toast.makeText(this, "Sair do Aplicativo", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.logout_message, Toast.LENGTH_SHORT).show();
+            logout();
             return true;
         } else {
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void logout() {
+        SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.apply();
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

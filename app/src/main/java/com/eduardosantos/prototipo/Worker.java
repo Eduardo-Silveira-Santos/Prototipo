@@ -7,11 +7,15 @@ public class Worker implements Parcelable {
     private String name;
     private String profession;
     private double rating;
+    private String phoneNumber;
+    private String city;
 
-    public Worker(String name, String profession, double rating) {
+    public Worker(String name, String profession, double rating, String phoneNumber, String city) {
         this.name = name;
         this.profession = profession;
         this.rating = rating;
+        this.phoneNumber = phoneNumber;
+        this.city = city;
     }
 
     protected Worker(Parcel in) {
@@ -59,5 +63,13 @@ public class Worker implements Parcelable {
     @Override
     public String toString() {
         return name + " - " + profession;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public String getCity() {
+        return city;
     }
 }

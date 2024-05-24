@@ -1,5 +1,10 @@
 package com.eduardosantos.prototipo;
 
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -22,74 +27,68 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import java.io.IOException;
-
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
-import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 public class FragmentAccount extends Fragment {
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_IMAGE_PICK = 2;
     private static final int PERMISSION_REQUEST_CODE = 100;
-
+    private UserViewModel userViewModel;
     private ImageView imageView;
-    private TextView nameTextView;
-    private TextView emailTextView;
-    private Button buttonChooseImage;
-    private Bitmap selectedImageBitmap; // Para armazenar a imagem selecionada
+    private Bitmap selectedImageBitmap;
+    private String userName;
+    private String userEmail;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_account, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate( R.layout.fragment_account, container, false);
 
         imageView = view.findViewById(R.id.imageView);
-        nameTextView = view.findViewById(R.id.nameTextView);
-        emailTextView = view.findViewById(R.id.emailTextView);
-        buttonChooseImage = view.findViewById(R.id.buttonChooseImage);
+        Button buttonChooseImage = view.findViewById( R.id.buttonChooseImage );
 
-        Bundle args = getArguments();
-        if (args != null) {
-            String userName = args.getString("user_name");
-            String userEmail = args.getString("user_email");
-            nameTextView.setText(userName);
-            emailTextView.setText(userEmail);
-        }
+        userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
 
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dispatchTakePictureIntent();
-            }
-        });
+        TextView nameTextView = view.findViewById(R.id.nameTextView);
+        TextView emailTextView = view.findViewById(R.id.emailTextView);
 
-        buttonChooseImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (ContextCompat.checkSelfPermission(getContext(), READ_EXTERNAL_STORAGE) != PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(getActivity(), new String[]{READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
-                } else {
-                    dispatchPickPictureIntent();
-                }
-            }
-        });
+        nameTextView.setText(userName);
+        emailTextView.setText(userEmail);
 
-        // Verificar se há uma imagem previamente selecionada
+        imageView.setOnClickListener( v -> dispatchTakePictureIntent() );
+
+        buttonChooseImage.setOnClickListener( v -> requestStoragePermissionOrDispatchPick() );
+
         if (selectedImageBitmap != null) {
             imageView.setImageBitmap(selectedImageBitmap);
         } else {
-            imageView.setImageResource(R.drawable.ic_list_worker); // Definir o ícone padrão
+            imageView.setImageResource(R.drawable.ic_list_worker);
         }
 
         return view;
     }
 
+
+    public FragmentAccount(String userName, String userEmail) {
+        this.userName = userName;
+        this.userEmail = userEmail;
+    }
+
+    @SuppressLint("QueryPermissionsNeeded")
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
+    }
+
+    private void requestStoragePermissionOrDispatchPick() {
+        if (ContextCompat.checkSelfPermission(getContext(), READ_EXTERNAL_STORAGE) != PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+        } else {
+            dispatchPickPictureIntent();
         }
     }
 
@@ -101,19 +100,21 @@ public class FragmentAccount extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == getActivity().RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            selectedImageBitmap = getCroppedBitmap(imageBitmap);
-            imageView.setImageBitmap(selectedImageBitmap);
-        } else if (requestCode == REQUEST_IMAGE_PICK && resultCode == getActivity().RESULT_OK) {
-            Uri selectedImageUri = data.getData();
-            try {
-                Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), selectedImageUri);
+        if (resultCode == Activity.RESULT_OK) {
+            Bitmap imageBitmap = null;
+            if (requestCode == REQUEST_IMAGE_CAPTURE) {
+                imageBitmap = (Bitmap) data.getExtras().get("data");
+            } else if (requestCode == REQUEST_IMAGE_PICK) {
+                Uri selectedImageUri = data.getData();
+                try {
+                    imageBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), selectedImageUri);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (imageBitmap != null) {
                 selectedImageBitmap = getCroppedBitmap(imageBitmap);
                 imageView.setImageBitmap(selectedImageBitmap);
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         }
     }
@@ -130,9 +131,9 @@ public class FragmentAccount extends Fragment {
         paint.setAntiAlias(true);
         canvas.drawARGB(0, 0, 0, 0);
         paint.setColor(color);
-        canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,
-                bitmap.getWidth() / 2, paint);
-        paint.setXfermode(new PorterDuffXfermode( PorterDuff.Mode.SRC_IN));
+        canvas.drawCircle((float) bitmap.getWidth() / 2, (float) bitmap.getHeight() / 2,
+                (float) bitmap.getWidth() / 2, paint);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
         canvas.drawBitmap(bitmap, rect, rect, paint);
         return output;
     }

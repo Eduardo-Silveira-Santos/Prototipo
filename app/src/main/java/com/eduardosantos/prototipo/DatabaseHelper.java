@@ -1,6 +1,5 @@
 package com.eduardosantos.prototipo;
 
-import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -8,6 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "Signup.db";
@@ -36,11 +38,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public boolean insertData(String name, String email, String password) {
+        String hashedPassword = hashPassword(password);
+        if (hashedPassword == null) return false;
+
         try (SQLiteDatabase db = this.getWritableDatabase()) {
             ContentValues contentValues = new ContentValues();
             contentValues.put(COL_NAME, name);
             contentValues.put(COL_EMAIL, email);
-            contentValues.put(COL_PASSWORD, password);
+            contentValues.put(COL_PASSWORD, hashedPassword);
             long result = db.insert(TABLE_NAME, null, contentValues);
             return result != -1;
         }
@@ -55,9 +60,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public boolean checkEmailPassword(String email, String password) {
+        String hashedPassword = hashPassword(password);
+        if (hashedPassword == null) return false;
+
         String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + COL_EMAIL + " = ? AND " + COL_PASSWORD + " = ?";
         try (SQLiteDatabase db = this.getReadableDatabase();
-             Cursor cursor = db.rawQuery(query, new String[]{email, password})) {
+             Cursor cursor = db.rawQuery(query, new String[]{email, hashedPassword})) {
             return cursor.getCount() > 0;
         }
     }
@@ -78,5 +86,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         db.close();
         return userName;
+    }
+
+    private String hashPassword(String password) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hashedBytes = md.digest(password.getBytes());
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hashedBytes) {
+                sb.append(Integer.toString((b & 0xff) + 0x100, 16).substring(1));
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

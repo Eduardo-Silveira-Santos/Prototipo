@@ -21,14 +21,6 @@
             android:layout_marginRight="18dp"
             android:orientation="horizontal">
 
-            <ImageButton
-                android:id="@+id/btn_left"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginStart="8dp"
-                android:background="@null" />
-
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -40,7 +32,6 @@
                 android:textStyle="bold" />
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
-
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
@@ -66,6 +57,13 @@
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"
+        android:layout_above="@id/tabLayout" />
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/toolbar"
