@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private void setupViews() {
         tabLayout = findViewById(R.id.tabLayout);
         viewPager2 = findViewById(R.id.viewPager);
-        vpAdapter = new ViewPagerAdapter(this);
+        vpAdapter = new ViewPagerAdapter(this, userEmail, userName);
         viewPager2.setAdapter(vpAdapter);
 
         Toolbar myToolbar = findViewById(R.id.toolbar);
@@ -71,11 +71,10 @@ public class MainActivity extends AppCompatActivity {
         if (userName != null) {
             Toast.makeText(this, getString(R.string.welcome_message, userName), Toast.LENGTH_SHORT).show();
             // Agora que userName e userEmail estão inicializados, podemos passá-los para o construtor de ViewPagerAdapter
-            vpAdapter = new ViewPagerAdapter(this );
+            vpAdapter = new ViewPagerAdapter(this, userEmail, userName);
             viewPager2.setAdapter(vpAdapter);
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

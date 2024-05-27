@@ -4,11 +4,11 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Worker implements Parcelable {
-    private String name;
-    private String profession;
-    private double rating;
-    private String phoneNumber;
-    private String city;
+    private final String name;
+    private final String profession;
+    private final double rating;
+    private final String phoneNumber;
+    private final String city;
 
     public Worker(String name, String profession, double rating, String phoneNumber, String city) {
         this.name = name;
@@ -22,6 +22,8 @@ public class Worker implements Parcelable {
         name = in.readString();
         profession = in.readString();
         rating = in.readDouble();
+        phoneNumber = in.readString();
+        city = in.readString();
     }
 
     public static final Creator<Worker> CREATOR = new Creator<Worker>() {
@@ -46,6 +48,8 @@ public class Worker implements Parcelable {
         dest.writeString(name);
         dest.writeString(profession);
         dest.writeDouble(rating);
+        dest.writeString(phoneNumber);
+        dest.writeString(city);
     }
 
     public String getName() {

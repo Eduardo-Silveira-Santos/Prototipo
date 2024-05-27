@@ -6,10 +6,10 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 public class ViewPagerAdapter extends FragmentStateAdapter {
-    private String userName;
-    private String userEmail;
+    private final String userName;
+    private final String userEmail;
 
-    public ViewPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
+    public ViewPagerAdapter(@NonNull FragmentActivity fragmentActivity, String userName, String userEmail) {
         super(fragmentActivity);
         this.userName = userName;
         this.userEmail = userEmail;

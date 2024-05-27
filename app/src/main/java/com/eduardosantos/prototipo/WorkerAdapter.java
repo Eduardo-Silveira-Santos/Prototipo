@@ -16,8 +16,8 @@ import java.util.List;
 
 public class WorkerAdapter extends ArrayAdapter<Worker> {
 
-    private Context mContext;
-    private int mResource;
+    private final Context mContext;
+    private final int mResource;
 
     public WorkerAdapter(@NonNull Context context, int resource, @NonNull List<Worker> objects) {
         super(context, resource, objects);

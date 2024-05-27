@@ -39,8 +39,8 @@ public class FragmentAccount extends Fragment {
     private UserViewModel userViewModel;
     private ImageView imageView;
     private Bitmap selectedImageBitmap;
-    private String userName;
-    private String userEmail;
+    private final String userName;
+    private final String userEmail;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

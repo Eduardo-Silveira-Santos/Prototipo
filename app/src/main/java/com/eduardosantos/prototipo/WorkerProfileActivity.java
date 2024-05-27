@@ -1,7 +1,6 @@
 package com.eduardosantos.prototipo;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -41,12 +40,10 @@ public class WorkerProfileActivity extends AppCompatActivity {
         professionTextView.setText(worker.getProfession());
         ratingTextView.setText(String.valueOf(worker.getRating()));
 
-        // Debugging: Verificando se o número de telefone e a cidade estão corretos
-        Log.d("WorkerProfileActivity", "Telefone: " + worker.getPhoneNumber());
-        Log.d("WorkerProfileActivity", "Cidade: " + worker.getCity());
+        String phoneNumber = worker.getPhoneNumber();
+        String cidade = worker.getCity();
 
-        contactTextView.setText(worker.getPhoneNumber()); // Definindo o número de telefone
-        cityTextView.setText(worker.getCity()); // Definindo a cidade
+        contactTextView.setText(worker.getPhoneNumber());
+        cityTextView.setText(worker.getCity());
     }
-
 }
