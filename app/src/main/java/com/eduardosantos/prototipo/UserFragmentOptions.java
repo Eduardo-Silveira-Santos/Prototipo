@@ -5,29 +5,28 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-public class FragmentOptions extends Fragment implements View.OnClickListener {
+public class UserFragmentOptions extends Fragment {
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_options, container, false);
 
-        setClickListener(view, R.id.joatCard, "Faz Tudo");
-        setClickListener(view, R.id.electricianCard, "Eletricista");
-        setClickListener(view, R.id.painterCard, "Pintor");
-        setClickListener(view, R.id.plumberCard, "Encanador");
-        setClickListener(view, R.id.mechanicCard, "Mecânico");
-        setClickListener(view, R.id.pestControlCard, "Dedetizador");
+        setupCardClickListener(view, R.id.joatCard, "Faz Tudo");
+        setupCardClickListener(view, R.id.electricianCard, "Eletricista");
+        setupCardClickListener(view, R.id.painterCard, "Pintor");
+        setupCardClickListener(view, R.id.plumberCard, "Encanador");
+        setupCardClickListener(view, R.id.mechanicCard, "Mecânico");
+        setupCardClickListener(view, R.id.pestControlCard, "Dedetizador");
 
         return view;
     }
 
-    private void setClickListener(View view, int id, final String profession) {
+    private void setupCardClickListener(View view, int id, final String profession) {
         view.findViewById(id).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -39,10 +38,7 @@ public class FragmentOptions extends Fragment implements View.OnClickListener {
     private void startWorkerListActivity(String profession) {
         Intent intent = new Intent(getActivity(), WorkerListActivity.class);
         intent.putExtra("profession", profession);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-    }
-
-    @Override
-    public void onClick(View v) {
     }
 }

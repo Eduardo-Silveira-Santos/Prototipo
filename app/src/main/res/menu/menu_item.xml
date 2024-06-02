@@ -12,5 +12,4 @@
     <item android:id="@+id/logout"
         android:icon="@drawable/ic_menu_exit"
         android:title="Sair" />
-
 </menu>

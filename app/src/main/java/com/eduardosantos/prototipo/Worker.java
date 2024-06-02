@@ -5,27 +5,33 @@ import android.os.Parcelable;
 
 public class Worker implements Parcelable {
     private final String name;
+    private final String email;
     private final String profession;
     private final double rating;
     private final String phoneNumber;
     private final String city;
 
-    public Worker(String name, String profession, double rating, String phoneNumber, String city) {
+    // Construtor completo
+    public Worker(String name, String email, String profession, double rating, String phoneNumber, String city) {
         this.name = name;
+        this.email = email;
         this.profession = profession;
         this.rating = rating;
         this.phoneNumber = phoneNumber;
         this.city = city;
     }
 
+    // Construtor para o Parcelable
     protected Worker(Parcel in) {
         name = in.readString();
+        email = in.readString();
         profession = in.readString();
         rating = in.readDouble();
         phoneNumber = in.readString();
         city = in.readString();
     }
 
+    // Implementação do Parcelable.Creator
     public static final Creator<Worker> CREATOR = new Creator<Worker>() {
         @Override
         public Worker createFromParcel(Parcel in) {
@@ -38,6 +44,7 @@ public class Worker implements Parcelable {
         }
     };
 
+    // Métodos Parcelable
     @Override
     public int describeContents() {
         return 0;
@@ -46,14 +53,20 @@ public class Worker implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
+        dest.writeString(email);
         dest.writeString(profession);
         dest.writeDouble(rating);
         dest.writeString(phoneNumber);
         dest.writeString(city);
     }
 
+    // Getters
     public String getName() {
         return name;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     public String getProfession() {
@@ -64,16 +77,17 @@ public class Worker implements Parcelable {
         return rating;
     }
 
-    @Override
-    public String toString() {
-        return name + " - " + profession;
-    }
-
     public String getPhoneNumber() {
         return phoneNumber;
     }
 
     public String getCity() {
         return city;
+    }
+
+    // toString para uma representação textual
+    @Override
+    public String toString() {
+        return name + " - " + profession;
     }
 }

@@ -5,20 +5,19 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".UserMainActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
-        android:layout_alignParentTop="true"
-        tools:ignore="MissingConstraints">
+        android:layout_alignParentTop="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginRight="18dp"
+            android:layout_marginEnd="18dp"
             android:orientation="horizontal">
 
             <TextView
@@ -27,6 +26,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="PAU PRA TODA OBRA"
+                android:layout_marginLeft="40dp"
                 android:textColor="@color/white"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -58,14 +58,9 @@
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_below="@id/toolbar"
-        android:layout_above="@id/tabLayout" />
+        android:layout_above="@id/tabLayout"
+        android:layout_weight="1" />
 
-    <FrameLayout
-        android:id="@+id/fragment_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/toolbar"
-        android:layout_above="@id/tabLayout" />
 </RelativeLayout>

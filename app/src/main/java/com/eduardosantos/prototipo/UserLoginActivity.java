@@ -14,10 +14,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.eduardosantos.prototipo.databinding.ActivityLoginBinding;
-
-public class LoginActivity extends AppCompatActivity {
+public class UserLoginActivity extends AppCompatActivity {
     private ActivityLoginBinding binding;
-    private DatabaseHelper databaseHelper;
+    private UserDatabaseHelper databaseHelper;
     private UserViewModel userViewModel;
 
     @Override
@@ -27,21 +26,26 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
-        databaseHelper = new DatabaseHelper(this);
+        databaseHelper = new UserDatabaseHelper(this);
 
         binding.loginButton.setOnClickListener(v -> {
             String email = binding.loginEmail.getText().toString();
             String password = binding.loginPassword.getText().toString();
 
             if (email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(LoginActivity.this, "Todos os campos são obrigatórios", Toast.LENGTH_SHORT).show();
+                Toast.makeText(UserLoginActivity.this, "Todos os campos são obrigatórios", Toast.LENGTH_SHORT).show();
             } else {
                 new LoginTask().execute(email, password);
             }
         });
 
         binding.signupRedirectText.setOnClickListener(v -> {
-            Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
+            Intent intent = new Intent(UserLoginActivity.this, UserSignupActivity.class);
+            startActivity(intent);
+        });
+
+        binding.signupWorkertRedirectText.setOnClickListener(v -> {
+            Intent intent = new Intent(UserLoginActivity.this, WorkerLoginActivity.class);
             startActivity(intent);
         });
 
@@ -73,13 +77,13 @@ public class LoginActivity extends AppCompatActivity {
                 userViewModel.setUserName(userName);
                 userViewModel.setUserEmail(email);
 
-                Toast.makeText(LoginActivity.this, "Bem-vindo, " + userName + "!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(UserLoginActivity.this, "Bem-vindo, " + userName + "!", Toast.LENGTH_SHORT).show();
                 hideKeyboard();
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                Intent intent = new Intent(UserLoginActivity.this, UserMainActivity.class);
                 startActivity(intent);
                 finish();
             } else {
-                Toast.makeText(LoginActivity.this, "Credenciais Inválidas", Toast.LENGTH_SHORT).show();
+                Toast.makeText(UserLoginActivity.this, "Credenciais Inválidas", Toast.LENGTH_SHORT).show();
             }
         }
     }

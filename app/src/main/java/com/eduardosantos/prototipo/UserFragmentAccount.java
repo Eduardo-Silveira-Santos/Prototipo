@@ -5,8 +5,10 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
@@ -29,9 +31,11 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class FragmentAccount extends Fragment {
+public class UserFragmentAccount extends Fragment {
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_IMAGE_PICK = 2;
@@ -39,15 +43,15 @@ public class FragmentAccount extends Fragment {
     private UserViewModel userViewModel;
     private ImageView imageView;
     private Bitmap selectedImageBitmap;
-    private final String userName;
-    private final String userEmail;
+    private String userName;
+    private String userEmail;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate( R.layout.fragment_account, container, false);
+        View view = inflater.inflate(R.layout.fragment_account, container, false);
 
         imageView = view.findViewById(R.id.imageView);
-        Button buttonChooseImage = view.findViewById( R.id.buttonChooseImage );
+        Button buttonChooseImage = view.findViewById(R.id.buttonChooseImage);
 
         userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
 
@@ -57,21 +61,32 @@ public class FragmentAccount extends Fragment {
         nameTextView.setText(userName);
         emailTextView.setText(userEmail);
 
-        imageView.setOnClickListener( v -> dispatchTakePictureIntent() );
+        imageView.setOnClickListener(v -> dispatchTakePictureIntent());
 
-        buttonChooseImage.setOnClickListener( v -> requestStoragePermissionOrDispatchPick() );
+        buttonChooseImage.setOnClickListener(v -> requestStoragePermissionOrDispatchPick());
 
-        if (selectedImageBitmap != null) {
+        Bitmap profileImage = loadImageFromInternalStorage();
+        if (profileImage != null) {
+            selectedImageBitmap = profileImage;
             imageView.setImageBitmap(selectedImageBitmap);
         } else {
             imageView.setImageResource(R.drawable.ic_list_worker);
         }
 
+        Button logoutButton = view.findViewById(R.id.logoutButton);
+        logoutButton.setOnClickListener(v -> logoutAndNavigateToLogin());
+
         return view;
     }
 
+    private void logoutAndNavigateToLogin() {
+        Intent intent = new Intent(requireContext(), UserLoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        requireActivity().finish();
+    }
 
-    public FragmentAccount(String userName, String userEmail) {
+    public UserFragmentAccount(String userName, String userEmail) {
         this.userName = userName;
         this.userEmail = userEmail;
     }
@@ -107,7 +122,7 @@ public class FragmentAccount extends Fragment {
             } else if (requestCode == REQUEST_IMAGE_PICK) {
                 Uri selectedImageUri = data.getData();
                 try {
-                    imageBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), selectedImageUri);
+                    imageBitmap = MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), selectedImageUri);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -115,9 +130,41 @@ public class FragmentAccount extends Fragment {
             if (imageBitmap != null) {
                 selectedImageBitmap = getCroppedBitmap(imageBitmap);
                 imageView.setImageBitmap(selectedImageBitmap);
+                saveImageToInternalStorage(selectedImageBitmap);
             }
         }
     }
+
+    private void saveImageToInternalStorage(Bitmap bitmap) {
+        File directory = requireContext().getDir("profile_images", Context.MODE_PRIVATE);
+        File imagePath = new File(directory, userEmail + "_profile.jpg");
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(imagePath);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (fos != null) {
+                    fos.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private Bitmap loadImageFromInternalStorage() {
+        Bitmap bitmap = null;
+        File directory = requireContext().getDir("profile_images", Context.MODE_PRIVATE);
+        File imagePath = new File(directory, userEmail + "_profile.jpg");
+        if (imagePath.exists()) {
+            bitmap = BitmapFactory.decodeFile(imagePath.getAbsolutePath());
+        }
+        return bitmap;
+    }
+
 
     private Bitmap getCroppedBitmap(Bitmap bitmap) {
         Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),

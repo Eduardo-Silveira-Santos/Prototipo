@@ -7,26 +7,25 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager2.widget.ViewPager2;
-
 import com.google.android.material.tabs.TabLayout;
 
-public class MainActivity extends AppCompatActivity {
+public class UserMainActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager2 viewPager2;
-    private ViewPagerAdapter vpAdapter;
-    private DatabaseHelper databaseHelper;
+    private UserViewPagerAdapter userViewPagerAdapter;
+    private UserDatabaseHelper userDatabaseHelper;
     private String userName;
     private String userEmail;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        databaseHelper = new DatabaseHelper(this);
+        userDatabaseHelper = new UserDatabaseHelper(this);
 
         setupViews();
         loadUserInfo();
@@ -35,11 +34,11 @@ public class MainActivity extends AppCompatActivity {
     private void setupViews() {
         tabLayout = findViewById(R.id.tabLayout);
         viewPager2 = findViewById(R.id.viewPager);
-        vpAdapter = new ViewPagerAdapter(this, userEmail, userName);
-        viewPager2.setAdapter(vpAdapter);
+        userViewPagerAdapter = new UserViewPagerAdapter(this, userEmail, userName);
+        viewPager2.setAdapter( userViewPagerAdapter );
 
-        Toolbar myToolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(myToolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -68,12 +67,15 @@ public class MainActivity extends AppCompatActivity {
         userName = sharedPreferences.getString("user_name", null);
         userEmail = sharedPreferences.getString("user_email", null);
 
-        if (userName != null) {
+        if (userName != null && userEmail != null) {
             Toast.makeText(this, getString(R.string.welcome_message, userName), Toast.LENGTH_SHORT).show();
-            // Agora que userName e userEmail estão inicializados, podemos passá-los para o construtor de ViewPagerAdapter
-            vpAdapter = new ViewPagerAdapter(this, userEmail, userName);
-            viewPager2.setAdapter(vpAdapter);
+            setupViewPagerAdapter();
         }
+    }
+
+    private void setupViewPagerAdapter() {
+        userViewPagerAdapter = new UserViewPagerAdapter(this, userEmail, userName);
+        viewPager2.setAdapter( userViewPagerAdapter );
     }
 
     @Override
@@ -90,17 +92,21 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.settings) {
             Toast.makeText(this, R.string.settings_selected, Toast.LENGTH_SHORT).show();
             return true;
-        } else if (id == R.id.share) {
+        }
+        else if (id == R.id.share) {
             Toast.makeText(this, R.string.share_selected, Toast.LENGTH_SHORT).show();
             return true;
-        } else if (id == R.id.aboutus) {
+        }
+        else if (id == R.id.aboutus) {
             Toast.makeText(this, R.string.about_selected, Toast.LENGTH_SHORT).show();
             return true;
-        } else if (id == R.id.logout) {
+        }
+        else if (id == R.id.logout) {
             Toast.makeText(this, R.string.logout_message, Toast.LENGTH_SHORT).show();
             logout();
             return true;
-        } else {
+        }
+        else {
             return super.onOptionsItemSelected(item);
         }
     }
@@ -110,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();
         editor.apply();
-        Intent intent = new Intent(this, LoginActivity.class);
+        Intent intent = new Intent(this, UserLoginActivity.class);
         startActivity(intent);
         finish();
     }

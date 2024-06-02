@@ -1,0 +1,122 @@
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:orientation="vertical"
+    tools:context=".WorkerSignupActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:padding="30dp">
+
+        <EditText
+            android:id="@+id/signupWorker_name"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/app_border"
+            android:drawableLeft="@drawable/ic_login_name"
+            android:drawablePadding="8dp"
+            android:hint="Nome"
+            android:padding="8dp" />
+
+        <EditText
+            android:id="@+id/signupWorker_email"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/app_border"
+            android:drawableLeft="@drawable/ic_login_email"
+            android:drawablePadding="8dp"
+            android:hint="Email"
+            android:padding="8dp" />
+
+        <EditText
+            android:id="@+id/signupWorker_profission"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/app_border"
+            android:drawableLeft="@drawable/ic_worker_work"
+            android:drawablePadding="8dp"
+            android:hint="Profissão"
+            android:padding="8dp" />
+
+        <EditText
+            android:id="@+id/signupWorker_phone"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/app_border"
+            android:drawableLeft="@drawable/ic_worker_phone"
+            android:drawablePadding="8dp"
+            android:hint="Telefone (ex: 549123456789)"
+            android:padding="8dp" />
+
+        <EditText
+            android:id="@+id/signupWorker_city"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/app_border"
+            android:drawableLeft="@drawable/ic_worker_location"
+            android:drawablePadding="8dp"
+            android:hint="Cidade"
+            android:padding="8dp" />
+
+        <EditText
+            android:id="@+id/signupWorker_password"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/app_border"
+            android:drawableLeft="@drawable/ic_login_lock"
+            android:drawablePadding="8dp"
+            android:hint="Senha"
+            android:inputType="textPassword"
+            android:padding="8dp" />
+
+        <EditText
+            android:id="@+id/signupWorker_confirm"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/app_border"
+            android:drawableLeft="@drawable/ic_login_password"
+            android:drawablePadding="8dp"
+            android:hint="Confirmar Senha"
+            android:inputType="textPassword"
+            android:padding="8dp" />
+
+        <Button
+            android:id="@+id/signupWorker_button"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_marginTop="30dp"
+            android:text="Cadastrar"
+            android:textSize="18sp"
+            app:cornerRadius="30dp" />
+
+        <TextView
+            android:id="@+id/loginWorkerRedirectText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="8dp"
+            android:text="Já é trabalhador? Conecte-se"
+            android:textColor="@color/black"
+            android:textStyle="italic"
+            android:textSize="18sp" />
+    </LinearLayout>
+</ScrollView>

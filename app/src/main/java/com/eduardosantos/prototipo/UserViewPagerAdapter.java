@@ -5,11 +5,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-public class ViewPagerAdapter extends FragmentStateAdapter {
-    private final String userName;
-    private final String userEmail;
+public class UserViewPagerAdapter extends FragmentStateAdapter {
+    private String userName;
+    private String userEmail;
 
-    public ViewPagerAdapter(@NonNull FragmentActivity fragmentActivity, String userName, String userEmail) {
+    public UserViewPagerAdapter(@NonNull FragmentActivity fragmentActivity, String userName, String userEmail) {
         super(fragmentActivity);
         this.userName = userName;
         this.userEmail = userEmail;
@@ -19,13 +19,13 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position) {
             case 0:
-                return new FragmentHome();
+                return new UserFragmentHome();
             case 1:
-                return new FragmentOptions();
+                return new UserFragmentOptions();
             case 2:
-                return new FragmentAccount(userName, userEmail);
+                return new UserFragmentAccount(userName, userEmail);
             default:
-                return new FragmentHome();
+                return new UserFragmentHome();
         }
     }
 

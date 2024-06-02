@@ -6,4 +6,9 @@
     <string name="share_selected">Compartilhamento Selecionado</string>
     <string name="about_selected">Informações Selecionadas</string>
     <string name="logout_message">Sair do Aplicativo</string>
+    <string name="default_name">Nome não disponível</string>
+    <string name="default_profession">Profissão não disponível</string>
+    <string name="default_contact">Contato não disponível</string>
+    <string name="default_city">Cidade não disponível</string>
+    <string name="review_submitted">Avaliação: %1$s estrelas\nDescrição: %2$s</string>
 </resources>
