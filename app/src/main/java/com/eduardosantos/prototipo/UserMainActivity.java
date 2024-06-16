@@ -7,9 +7,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager2.widget.ViewPager2;
+
 import com.google.android.material.tabs.TabLayout;
 
 public class UserMainActivity extends AppCompatActivity {
@@ -35,10 +37,16 @@ public class UserMainActivity extends AppCompatActivity {
         tabLayout = findViewById(R.id.tabLayout);
         viewPager2 = findViewById(R.id.viewPager);
         userViewPagerAdapter = new UserViewPagerAdapter(this, userEmail, userName);
-        viewPager2.setAdapter( userViewPagerAdapter );
+        viewPager2.setAdapter(userViewPagerAdapter);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Seleciona o primeiro item no ViewPager2
+        viewPager2.setCurrentItem(0);
+
+        // Seleciona a primeira aba
+        tabLayout.selectTab(tabLayout.getTabAt(1));
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -75,7 +83,8 @@ public class UserMainActivity extends AppCompatActivity {
 
     private void setupViewPagerAdapter() {
         userViewPagerAdapter = new UserViewPagerAdapter(this, userEmail, userName);
-        viewPager2.setAdapter( userViewPagerAdapter );
+        viewPager2.setAdapter(userViewPagerAdapter);
+        viewPager2.setCurrentItem(1); // Certifica que o primeiro fragmento é exibido inicialmente
     }
 
     @Override
@@ -92,21 +101,17 @@ public class UserMainActivity extends AppCompatActivity {
         if (id == R.id.settings) {
             Toast.makeText(this, R.string.settings_selected, Toast.LENGTH_SHORT).show();
             return true;
-        }
-        else if (id == R.id.share) {
+        } else if (id == R.id.share) {
             Toast.makeText(this, R.string.share_selected, Toast.LENGTH_SHORT).show();
             return true;
-        }
-        else if (id == R.id.aboutus) {
+        } else if (id == R.id.aboutus) {
             Toast.makeText(this, R.string.about_selected, Toast.LENGTH_SHORT).show();
             return true;
-        }
-        else if (id == R.id.logout) {
+        } else if (id == R.id.logout) {
             Toast.makeText(this, R.string.logout_message, Toast.LENGTH_SHORT).show();
             logout();
             return true;
-        }
-        else {
+        } else {
             return super.onOptionsItemSelected(item);
         }
     }

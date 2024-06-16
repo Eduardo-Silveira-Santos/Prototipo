@@ -5,7 +5,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
 import androidx.annotation.Nullable;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -103,6 +105,20 @@ public class UserDatabaseHelper extends SQLiteOpenHelper {
         } finally {
             db.close();
         }
+    }
+
+    public void updateUser(String email, String name) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COL_NAME, name); // Corrigido para colocar o nome corretamente no ContentValues
+        db.update(TABLE_NAME, values, COL_EMAIL + "=?", new String[]{email});
+        db.close();
+    }
+
+    public void deleteUser(String email) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_NAME, COL_EMAIL + "=?", new String[]{email});
+        db.close();
     }
 
     private String hashPassword(String password) {

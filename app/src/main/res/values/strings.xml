@@ -11,4 +11,12 @@
     <string name="default_contact">Contato não disponível</string>
     <string name="default_city">Cidade não disponível</string>
     <string name="review_submitted">Avaliação: %1$s estrelas\nDescrição: %2$s</string>
+    <string-array name="professions_array">
+        <item>Faz Tudo</item>
+        <item>Eletricista</item>
+        <item>Pintor</item>
+        <item>Encanador</item>
+        <item>Mecânico</item>
+        <item>Dedetizador</item>
+    </string-array>
 </resources>

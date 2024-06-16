@@ -113,9 +113,9 @@ public class UserSignupActivity extends AppCompatActivity {
     }
 
     private class SignupTask extends AsyncTask<Void, Void, Boolean> {
-        private String name;
-        private String email;
-        private String password;
+        private final String name;
+        private final String email;
+        private final String password;
 
         public SignupTask(String name, String email, String password) {
             this.name = name;

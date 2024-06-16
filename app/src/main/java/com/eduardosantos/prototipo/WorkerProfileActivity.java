@@ -1,6 +1,7 @@
 package com.eduardosantos.prototipo;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,6 +21,7 @@ public class WorkerProfileActivity extends AppCompatActivity {
     private EditText descriptionEditText;
     private Button submitReviewButton;
     private Worker worker;
+    private ImageView profileImageView;
     private static final String TAG = "WorkerProfileActivity";
 
     @Override
@@ -30,9 +33,10 @@ public class WorkerProfileActivity extends AppCompatActivity {
         ratingBar = findViewById(R.id.ratingBar);
         descriptionEditText = findViewById(R.id.descriptionEditText);
         submitReviewButton = findViewById(R.id.submitReviewButton);
+        profileImageView = findViewById(R.id.listImage4);
 
         if (worker != null) {
-            Log.d(TAG, "Worker object received: " + worker.toString());
+            Log.d(TAG, "Worker object received: " + worker );
             populateViews(worker);
         } else {
             Log.e(TAG, "Worker object is null!");
@@ -51,6 +55,23 @@ public class WorkerProfileActivity extends AppCompatActivity {
                 submitReview();
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Carregar a imagem do perfil do trabalhador novamente no onResume
+        if (worker != null) {
+            Bitmap profileImage = worker.getProfileImage();
+            if (profileImage != null) {
+                profileImageView.setImageBitmap(profileImage);
+            } else {
+                profileImageView.setImageResource(R.drawable.ic_list_worker);
+            }
+        } else {
+            Log.e(TAG, "Worker object is null, cannot load profile image.");
+        }
     }
 
     private void populateViews(Worker worker) {
@@ -77,6 +98,13 @@ public class WorkerProfileActivity extends AppCompatActivity {
             });
         } else {
             contactTextView.setText(R.string.default_contact);
+        }
+
+        Bitmap profileImage = worker.getProfileImage();
+        if (profileImage != null) {
+            profileImageView.setImageBitmap(profileImage);
+        } else {
+            profileImageView.setImageResource(R.drawable.ic_list_worker);
         }
     }
 

@@ -13,10 +13,8 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -24,6 +22,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -36,7 +35,7 @@ public class WorkerMainActivity extends AppCompatActivity {
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_IMAGE_PICK = 2;
     private static final int PERMISSION_REQUEST_CODE = 100;
-
+    private static final int EDIT_WORKER_REQUEST = 1;
     private TextView nameTextView;
     private TextView emailTextView;
     private TextView phoneTextView;
@@ -44,6 +43,8 @@ public class WorkerMainActivity extends AppCompatActivity {
     private TextView professionTextView;
     private TextView ratingTextView;
     private Button logoutButton;
+    private Button editButton;
+    private Button deleteButton;
     private ImageView imageView;
     private Bitmap selectedImageBitmap;
 
@@ -61,6 +62,8 @@ public class WorkerMainActivity extends AppCompatActivity {
         professionTextView = findViewById(R.id.professionTextView2);
         ratingTextView = findViewById(R.id.ratingTextView);
         logoutButton = findViewById(R.id.logoutButton);
+        editButton = findViewById(R.id.editButton);
+        deleteButton = findViewById(R.id.deleteButton);
         imageView = findViewById(R.id.imageView);
         Button buttonChooseImage = findViewById(R.id.buttonChooseImage);
 
@@ -83,9 +86,8 @@ public class WorkerMainActivity extends AppCompatActivity {
             Toast.makeText(this, "Trabalhador não encontrado", Toast.LENGTH_SHORT).show();
         }
 
-        Bitmap profileImage = loadImageFromInternalStorage();
-        if (profileImage != null) {
-            selectedImageBitmap = profileImage;
+        selectedImageBitmap = loadImageFromInternalStorage();
+        if (selectedImageBitmap != null) {
             imageView.setImageBitmap(selectedImageBitmap);
         } else {
             imageView.setImageResource(R.drawable.ic_list_worker);
@@ -94,12 +96,24 @@ public class WorkerMainActivity extends AppCompatActivity {
         imageView.setOnClickListener(v -> dispatchTakePictureIntent());
         buttonChooseImage.setOnClickListener(v -> requestStoragePermissionOrDispatchPick());
 
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                performLogout();
-            }
-        });
+        logoutButton.setOnClickListener(v -> performLogout());
+
+        editButton.setOnClickListener(v -> performEdit());
+
+        deleteButton.setOnClickListener(v -> performDelete());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Carregar a imagem do armazenamento interno novamente no onResume
+        selectedImageBitmap = loadImageFromInternalStorage();
+        if (selectedImageBitmap != null) {
+            imageView.setImageBitmap(selectedImageBitmap);
+        } else {
+            imageView.setImageResource(R.drawable.ic_list_worker);
+        }
     }
 
     private void performLogout() {
@@ -107,6 +121,25 @@ public class WorkerMainActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
+    }
+
+    private void performEdit() {
+        Intent intent = new Intent(WorkerMainActivity.this, EditWorkerActivity.class);
+        intent.putExtra("WORKER_EMAIL", workerEmail);
+        startActivityForResult(intent, EDIT_WORKER_REQUEST);
+    }
+
+    private void performDelete() {
+        new AlertDialog.Builder(this)
+                .setTitle("Excluir Conta")
+                .setMessage("Tem certeza de que deseja excluir sua conta?")
+                .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                    WorkerDatabaseHelper workerDatabaseHelper = new WorkerDatabaseHelper(this);
+                    workerDatabaseHelper.deleteWorker(workerEmail);
+                    performLogout();
+                })
+                .setNegativeButton(android.R.string.no, null)
+                .show();
     }
 
     @SuppressLint("QueryPermissionsNeeded")
@@ -133,24 +166,30 @@ public class WorkerMainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            Bitmap imageBitmap = null;
-            if (requestCode == REQUEST_IMAGE_CAPTURE) {
-                imageBitmap = (Bitmap) data.getExtras().get("data");
-            } else if (requestCode == REQUEST_IMAGE_PICK) {
-                Uri selectedImageUri = data.getData();
-                try {
-                    imageBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageUri);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (imageBitmap != null) {
-                selectedImageBitmap = getCroppedBitmap(imageBitmap);
-                imageView.setImageBitmap(selectedImageBitmap);
-                saveImageToInternalStorage(selectedImageBitmap);
-            }
+
+        if (requestCode == EDIT_WORKER_REQUEST && resultCode == Activity.RESULT_OK) {
+            // Extrair os dados atualizados do trabalhador
+            String updatedName = data.getStringExtra("UPDATED_NAME");
+            String updatedPhone = data.getStringExtra("UPDATED_PHONE");
+            String updatedCity = data.getStringExtra("UPDATED_CITY");
+            String updatedProfession = data.getStringExtra("UPDATED_PROFESSION");
+
+            // Atualizar a interface do usuário com as novas informações
+            nameTextView.setText(updatedName);
+            phoneTextView.setText(updatedPhone);
+            cityTextView.setText(updatedCity);
+            professionTextView.setText(updatedProfession);
+
+            // Atualizar outros campos conforme necessário
+
+            Toast.makeText(this, "Informações atualizadas com sucesso", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void startEditWorkerActivity() {
+        Intent intent = new Intent(WorkerMainActivity.this, EditWorkerActivity.class);
+        intent.putExtra("WORKER_EMAIL", workerEmail);
+        startActivityForResult(intent, EDIT_WORKER_REQUEST);
     }
 
     private Bitmap getCroppedBitmap(Bitmap bitmap) {

@@ -50,7 +50,12 @@ public class WorkerDatabaseHelper extends SQLiteOpenHelper {
     }
 
     private void insertDefaultWorkers(SQLiteDatabase db) {
-        // Seu código de inserção de trabalhadores padrão aqui...
+        //insertWorker("Matuê", "a", "54996008443", "Caxias do Sul", "1", "Faz Tudo");
+        //insertWorker("Sidoka", "b", "54996008443", "Caxias do Sul", "1", "Eletricista");
+        //insertWorker("Felipe Ret", "c", "54996008443", "Caxias do Sul", "1", "Pintor");
+        //insertWorker("Teto", "d", "54996008443", "Caxias do Sul", "1", "Encanador");
+        //nsertWorker("Xamã", "e", "54996008443", "Caxias do Sul", "1", "Mecânico");
+        //insertWorker("Mano Brown", "f", "54996008443", "Caxias do Sul", "1", "Dedetizador");
     }
 
     // Adicionando tratamento de exceções
@@ -212,5 +217,22 @@ public class WorkerDatabaseHelper extends SQLiteOpenHelper {
             db.close();
         }
         return worker;
+    }
+
+    public void updateWorker(String email, String name, String phone, String city, String profession) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COL_NAME, name);
+        values.put(COL_PHONE, phone);
+        values.put(COL_CITY, city);
+        values.put(COL_PROFESSION, profession);
+        db.update(TABLE_NAME, values, COL_EMAIL + "=?", new String[]{email});
+        db.close();
+    }
+
+    public void deleteWorker(String email) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_NAME, COL_EMAIL + "=?", new String[]{email});
+        db.close();
     }
 }

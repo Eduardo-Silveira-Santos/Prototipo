@@ -39,15 +39,12 @@
             android:hint="Email"
             android:padding="8dp" />
 
-        <EditText
-            android:id="@+id/signupWorker_profission"
+        <Spinner
+            android:id="@+id/signupWorker_profession"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginTop="30dp"
             android:background="@drawable/app_border"
-            android:drawableLeft="@drawable/ic_worker_work"
-            android:drawablePadding="8dp"
-            android:hint="Profissão"
             android:padding="8dp" />
 
         <EditText
@@ -58,7 +55,8 @@
             android:background="@drawable/app_border"
             android:drawableLeft="@drawable/ic_worker_phone"
             android:drawablePadding="8dp"
-            android:hint="Telefone (ex: 549123456789)"
+            android:hint="Telefone"
+            android:inputType="phone"
             android:padding="8dp" />
 
         <EditText

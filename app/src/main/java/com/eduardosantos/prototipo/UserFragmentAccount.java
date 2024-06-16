@@ -5,8 +5,10 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -23,6 +25,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -40,11 +43,24 @@ public class UserFragmentAccount extends Fragment {
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_IMAGE_PICK = 2;
     private static final int PERMISSION_REQUEST_CODE = 100;
+    private static final int EDIT_PROFILE_REQUEST_CODE = 101;
     private UserViewModel userViewModel;
     private ImageView imageView;
     private Bitmap selectedImageBitmap;
     private String userName;
     private String userEmail;
+    private TextView nameTextView;
+    private TextView emailTextView;
+
+    // Construtor vazio necessário para o FragmentManager
+    public UserFragmentAccount() {}
+
+    // Atualização do construtor para receber os dados de usuário
+    @SuppressLint("ValidFragment")
+    public UserFragmentAccount(String userName, String userEmail) {
+        this.userName = userName;
+        this.userEmail = userEmail;
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -52,22 +68,23 @@ public class UserFragmentAccount extends Fragment {
 
         imageView = view.findViewById(R.id.imageView);
         Button buttonChooseImage = view.findViewById(R.id.buttonChooseImage);
+        Button editProfileButton = view.findViewById(R.id.editProfileButton);
+        Button deleteAccountButton = view.findViewById(R.id.deleteAccountButton);
 
         userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
 
-        TextView nameTextView = view.findViewById(R.id.nameTextView);
-        TextView emailTextView = view.findViewById(R.id.emailTextView);
+        nameTextView = view.findViewById(R.id.nameTextView);
+        emailTextView = view.findViewById(R.id.emailTextView);
 
         nameTextView.setText(userName);
         emailTextView.setText(userEmail);
 
         imageView.setOnClickListener(v -> dispatchTakePictureIntent());
-
         buttonChooseImage.setOnClickListener(v -> requestStoragePermissionOrDispatchPick());
 
-        Bitmap profileImage = loadImageFromInternalStorage();
-        if (profileImage != null) {
-            selectedImageBitmap = profileImage;
+        // Carregar a imagem do armazenamento interno
+        selectedImageBitmap = loadImageFromInternalStorage();
+        if (selectedImageBitmap != null) {
             imageView.setImageBitmap(selectedImageBitmap);
         } else {
             imageView.setImageResource(R.drawable.ic_list_worker);
@@ -76,20 +93,85 @@ public class UserFragmentAccount extends Fragment {
         Button logoutButton = view.findViewById(R.id.logoutButton);
         logoutButton.setOnClickListener(v -> logoutAndNavigateToLogin());
 
+        // Adicionar ações para os botões de editar e excluir
+        editProfileButton.setOnClickListener(v -> showEditProfileDialog());
+        deleteAccountButton.setOnClickListener(v -> showDeleteAccountDialog());
+
         return view;
     }
 
+    private void showEditProfileDialog() {
+        Intent intent = new Intent(requireContext(), EditProfileActivity.class);
+        intent.putExtra("userName", userName);
+        intent.putExtra("userEmail", userEmail);
+        startActivityForResult(intent, EDIT_PROFILE_REQUEST_CODE);
+    }
+
+    private void updateUserProfile(String newName, String newEmail) {
+        // Atualização no banco de dados
+        UserDatabaseHelper dbHelper = new UserDatabaseHelper(requireContext());
+        dbHelper.updateUser(userEmail, newName); // Atualizar nome do usuário
+
+        // Atualização na ViewModel
+        userName = newName;
+        userEmail = newEmail;
+        userViewModel.setUserName(newName);
+        userViewModel.setUserEmail(newEmail);
+
+        // Atualizar dados exibidos na tela
+        if (nameTextView != null && emailTextView != null) {
+            nameTextView.setText(newName);
+            emailTextView.setText(newEmail);
+        }
+
+        Toast.makeText(requireContext(), "Perfil atualizado com sucesso", Toast.LENGTH_SHORT).show();
+    }
+
+    private void showDeleteAccountDialog() {
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Excluir Conta")
+                .setMessage("Tem certeza de que deseja excluir sua conta? Esta ação não pode ser desfeita.")
+                .setPositiveButton("Excluir", (dialog, which) -> deleteUserProfile())
+                .setNegativeButton("Cancelar", null)
+                .show();
+    }
+
+    private void deleteUserProfile() {
+        // Remover usuário do banco de dados
+        UserDatabaseHelper dbHelper = new UserDatabaseHelper(requireContext());
+        dbHelper.deleteUser(userEmail); // Supondo que userEmail seja o identificador único do usuário
+
+        // Limpar dados locais
+        clearSession();
+
+        // Notificar sucesso
+        Toast.makeText(requireContext(), "Conta excluída com sucesso", Toast.LENGTH_SHORT).show();
+
+        // Navegar para a tela de login
+        logoutAndNavigateToLogin();
+    }
+
+    private void clearSession() {
+        SharedPreferences preferences = requireContext().getSharedPreferences("user_session", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.clear();
+        editor.apply();
+    }
+
     private void logoutAndNavigateToLogin() {
+        // Limpar qualquer estado de sessão local (por exemplo, usando SharedPreferences)
+        SharedPreferences preferences = requireContext().getSharedPreferences("user_session", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.clear();
+        editor.apply();
+
+        // Navegar para a tela de login
         Intent intent = new Intent(requireContext(), UserLoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         requireActivity().finish();
     }
 
-    public UserFragmentAccount(String userName, String userEmail) {
-        this.userName = userName;
-        this.userEmail = userEmail;
-    }
 
     @SuppressLint("QueryPermissionsNeeded")
     private void dispatchTakePictureIntent() {
@@ -133,6 +215,15 @@ public class UserFragmentAccount extends Fragment {
                 saveImageToInternalStorage(selectedImageBitmap);
             }
         }
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == EDIT_PROFILE_REQUEST_CODE && data != null) {
+                String newName = data.getStringExtra("newName");
+                String newEmail = data.getStringExtra("newEmail");
+                if (newName != null && newEmail != null) {
+                    updateUserProfile(newName, newEmail);
+                }
+            }
+        }
     }
 
     private void saveImageToInternalStorage(Bitmap bitmap) {
@@ -165,7 +256,6 @@ public class UserFragmentAccount extends Fragment {
         return bitmap;
     }
 
-
     private Bitmap getCroppedBitmap(Bitmap bitmap) {
         Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
                 bitmap.getHeight(), Bitmap.Config.ARGB_8888);
@@ -191,6 +281,8 @@ public class UserFragmentAccount extends Fragment {
         if (requestCode == PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PERMISSION_GRANTED) {
                 dispatchPickPictureIntent();
+            } else {
+                Toast.makeText(getContext(), "Permissão de armazenamento necessária para escolher uma imagem", Toast.LENGTH_SHORT).show();
             }
         }
     }

@@ -19,7 +19,6 @@
             android:layout_marginBottom="16dp"
             android:clickable="true"
             android:focusable="true"
-            android:foreground="?android:attr/selectableItemBackground"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_list_worker" />
 
@@ -61,10 +60,26 @@
 
         <Button
             android:id="@+id/logoutButton"
-            android:layout_width="wrap_content"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="375dp"
+            android:layout_marginTop="300dp"
             android:text="Desconectar-se" />
+
+        <Button
+            android:id="@+id/editProfileButton"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="350dp"
+            android:text="Editar Perfil" />
+
+        <Button
+            android:id="@+id/deleteAccountButton"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="400dp"
+            android:text="Excluir Conta" />
     </FrameLayout>
 </LinearLayout>

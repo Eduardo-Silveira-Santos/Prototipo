@@ -11,6 +11,9 @@ cardview = "1.0.0"
 navigationRuntime = "2.7.7"
 appcompatVersion = "1.7.0-rc01"
 appcompatResources = "1.7.0-rc01"
+androidJustified = "1.3"
+textjustifyAndroid = "2.1.6"
+androidxAppcompat = "1.7.0"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -24,6 +27,9 @@ cardview = { group = "androidx.cardview", name = "cardview", version.ref = "card
 navigation-runtime = { group = "androidx.navigation", name = "navigation-runtime", version.ref = "navigationRuntime" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompatVersion" }
 androidx-appcompat-resources = { group = "androidx.appcompat", name = "appcompat-resources", version.ref = "appcompatResources" }
+android-justified = { group = "com.uncopt", name = "android.justified", version.ref = "androidJustified" }
+textjustify-android = { group = "com.github.bluejamesbond", name = "textjustify-android", version.ref = "textjustifyAndroid" }
+androidx-appcompat-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidxAppcompat" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

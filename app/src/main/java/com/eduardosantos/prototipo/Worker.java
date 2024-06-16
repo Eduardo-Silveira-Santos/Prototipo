@@ -1,5 +1,6 @@
 package com.eduardosantos.prototipo;
 
+import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -10,6 +11,7 @@ public class Worker implements Parcelable {
     private final double rating;
     private final String phoneNumber;
     private final String city;
+    private Bitmap profileImage;
 
     // Construtor completo
     public Worker(String name, String email, String profession, double rating, String phoneNumber, String city) {
@@ -29,6 +31,7 @@ public class Worker implements Parcelable {
         rating = in.readDouble();
         phoneNumber = in.readString();
         city = in.readString();
+        profileImage = in.readParcelable(Bitmap.class.getClassLoader());
     }
 
     // Implementação do Parcelable.Creator
@@ -58,6 +61,7 @@ public class Worker implements Parcelable {
         dest.writeDouble(rating);
         dest.writeString(phoneNumber);
         dest.writeString(city);
+        dest.writeParcelable(profileImage, flags);
     }
 
     // Getters
@@ -83,6 +87,14 @@ public class Worker implements Parcelable {
 
     public String getCity() {
         return city;
+    }
+
+    public Bitmap getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(Bitmap profileImage) {
+        this.profileImage = profileImage;
     }
 
     // toString para uma representação textual
