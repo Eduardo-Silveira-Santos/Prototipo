@@ -110,7 +110,7 @@ public class UserDatabaseHelper extends SQLiteOpenHelper {
     public void updateUser(String email, String name) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(COL_NAME, name); // Corrigido para colocar o nome corretamente no ContentValues
+        values.put(COL_NAME, name);
         db.update(TABLE_NAME, values, COL_EMAIL + "=?", new String[]{email});
         db.close();
     }
