@@ -28,6 +28,7 @@
             android:drawableLeft="@drawable/ic_login_email"
             android:drawablePadding="8dp"
             android:hint="Email"
+            android:maxLines="1"
             android:padding="8dp" />
 
         <EditText
